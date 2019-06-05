@@ -1,17 +1,23 @@
-benjaminihochberg <- function (pvalues,alpha = 0.05) { #by default alpha is 5%
+benjaminihochberg <- function (pvalues,alpha_level = 0.05) { #by default alpha is 5%
   
   n <- length(pvalues);
-  sorted_pvalues <- sort(pvalues_test);
-  threshold <- sorted_pvalues[max(which(sorted_pvalues < seq(0,alpha,length.out=n)))];
+  sorted_pvalues <- sort(pvalues);
+  indices <- (sorted_pvalues < seq(alpha_level/n,alpha_level,length.out=n));
+  threshold <- 0;
+  if (sum(indices)>0) {
+  threshold <- sorted_pvalues[max(which(indices))];
+  }
+  
   
   # TRUE = reject; FALSE = accept;
   
-  return(pvalues < threshold);
+  return(list(pvalues = pvalues, reject = pvalues <= threshold));
 }
 
 # give the function your pvalues
-pvalues_test <- runif(40)*0.1; #random to test
+pvalues_test <- runif(10)*0.15; #random to test
 
-rejected <- benjaminihochberg(pvalues_test, alpha = 0.09);
+fdr <- benjaminihochberg(pvalues_test, alpha_level= 0.1);
 
-cbind(pvalues = pvalues_test, reject = rejected)
+cbind(pvalues = fdr$pvalues, reject = fdr$reject)
+
