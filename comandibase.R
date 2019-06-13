@@ -5,6 +5,10 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path)); #set working direct
 setwd(getSrcDirectory()[1]) #set working directory to this folder, R
 
 #_______________________________________________________________________________
+#generic data
+typeofmydata <- is(mydata);
+
+#_______________________________________________________________________________
 #operations are always component-wise
 
 #sequence from 1 to 10
@@ -54,6 +58,13 @@ save.image("myobjects.RData") #save all objects
 rm(list=ls()) #remove all objects
 load("myobjects.RData") #load these objects
 
+
+#_______________________________________________________________________________
+#Exploration
+head(mydata) #first data
+pairs(mydata) # plots 1 vs 1
+boxplot(mydata) #boxplot
+
 #_______________________________________________________________________________
 #Indices
 colMeans(mydf) #means by column
@@ -72,3 +83,11 @@ hist(mydata,prob=T,main="Title",xlab="xlabel")
 boxplot(mydata,main="Title",xlab="xlabel")
 plot(mydatax,mydatay, main="Title",xlab="xlabel",ylab="ylabel")
 dev.off() #close all
+
+#Plots with labels
+colourlabels <- ifelse(mydata$labels == '1', 'red', 'blue') #add labels
+plot(x,y,col=colourlabels,pch=16) #plot with colours
+boxplot(mydata$x ~ mydata$labels, col=c('red','blue'), main='title') # plot two boxplots
+
+#Plots with categoric variables
+pie(table(mydata),col=rainbow(length(levels(mydata))))  #pie graph
